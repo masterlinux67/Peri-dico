@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOMBRE_PERIODICO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --negro: #111111;
+      --blanco: #f8f6f1;
+      --gris: #555555;
+      --gris-claro: #e8e4db;
+      --acento: #c0392b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--blanco);
+      color: var(--negro);
+      font-family: 'Source Serif 4', serif;
+    }
+
+    /* CABECERA */
+    header {
+      border-bottom: 4px solid var(--negro);
+      padding: 24px 40px 16px;
+      text-align: center;
+    }
+
+    .fecha-linea {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--gris);
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .nombre-periodico {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(48px, 8vw, 96px);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .lema {
+      font-size: 13px;
+      color: var(--gris);
+      font-style: italic;
+      border-top: 1px solid var(--gris-claro);
+      border-bottom: 1px solid var(--gris-claro);
+      padding: 6px 0;
+      margin-bottom: 0;
+    }
+
+    /* NAVEGACIÓN */
+    nav {
+      background: var(--negro);
+      padding: 0 40px;
+      overflow-x: auto;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 0;
+      justify-content: center;
+    }
+
+    nav ul li a {
+      display: block;
+      color: var(--blanco);
+      text-decoration: none;
+      font-size: 12px;
+      font-family: 'Source Serif 4', serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    nav ul li a:hover,
+    nav ul li a.activo {
+      background: var(--acento);
+    }
+
+    /* CONTENIDO PRINCIPAL */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 40px;
+    }
+
+    /* SECCIÓN */
+    .seccion {
+      display: none;
+    }
+
+    .seccion.activa {
+      display: block;
+    }
+
+    .titulo-seccion {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      border-bottom: 3px solid var(--negro);
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+    }
+
+    .titulo-seccion span {
+      color: var(--acento);
+    }
+
+    /* GRID DE ARTÍCULOS */
+    .grid-articulos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 32px;
+    }
+
+    .articulo {
+      border-bottom: 1px solid var(--gris-claro);
+      padding-bottom: 24px;
+    }
+
+    .articulo-imagen {
+      width: 100%;
+      height: 200px;
+      background: var(--gris-claro);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gris);
+      font-size: 13px;
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+
+    .articulo-categoria {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--acento);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .articulo-titulo {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .articulo-texto {
+      font-size: 14px;
+      color: var(--gris);
+      line-height: 1.7;
+    }
+
+    .articulo-autor {
+      font-size: 12px;
+      color: var(--gris);
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    /* PORTADA ESPECIAL */
+    .portada-principal {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+      margin-bottom: 40px;
+      padding-bottom: 40px;
+      border-bottom: 2px solid var(--negro);
+    }
+
+    .portada-principal .articulo-imagen {
+      height: 320px;
+    }
+
+    .portada-principal .articulo-titulo {
+      font-size: 32px;
+    }
+
+    .portada-secundaria {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    /* SUBCATEGORÍAS */
+    .subcategorias-nav {
+      display: flex;
+      gap: 0;
+      margin-bottom: 28px;
+      border-bottom: 2px solid var(--negro);
+    }
+
+    .subcategoria-btn {
+      padding: 10px 20px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: 'Source Serif 4', serif;
+      font-size: 13px;
+      color: var(--gris);
+      letter-spacing: 0.05em;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+
+    .subcategoria-btn:hover,
+    .subcategoria-btn.activo {
+      color: var(--negro);
+      border-bottom-color: var(--acento);
+    }
+
+    .subcategoria-contenido {
+      display: none;
+    }
+
+    .subcategoria-contenido.activa {
+      display: block;
+    }
+
+    /* PIE */
+    footer {
+      background: var(--negro);
+      color: var(--blanco);
+      text-align: center;
+      padding: 24px 40px;
+      font-size: 12px;
+      color: #999;
+      margin-top: 48px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      header { padding: 16px 20px; }
+      main { padding: 16px 16px; }
+      nav { padding: 0; }
+
+      .nombre-periodico { font-size: 36px; }
+      .fecha-linea { font-size: 11px; }
+
+      nav ul {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      nav ul::-webkit-scrollbar { display: none; }
+
+      nav ul li a {
+        font-size: 11px;
+        padding: 10px 12px;
+      }
+
+      .portada-principal { grid-template-columns: 1fr; }
+      .portada-secundaria { grid-template-columns: 1fr; }
+      .grid-articulos { grid-template-columns: 1fr; }
+
+      .portada-principal .articulo-imagen { height: 220px; }
+      .portada-principal .articulo-titulo { font-size: 22px; }
+
+      .subcategorias-nav { overflow-x: auto; flex-wrap: nowrap; }
+      .subcategoria-btn { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABECERA -->
+  <header>
+    <div class="fecha-linea">
+      <span id="fecha-actual"></span>
+      <span>Edición digital</span>
+    </div>
+    <div class="nombre-periodico">NOMBRE_PERIODICO</div>
+    <div class="lema">Todo lo que importa, en un solo lugar</div>
+  </header>
+
+  <!-- NAVEGACIÓN -->
+  <nav>
+    <ul>
+      <li><a href="#" class="nav-link activo" data-seccion="portada">Portada</a></li>
+      <li><a href="#" class="nav-link" data-seccion="cat-a">Categoría A</a></li>
+      <li><a href="#" class="nav-link" data-seccion="cat-b">Categoría B</a></li>
+      <li><a href="#" class="nav-link" data-seccion="cat-c">Categoría C</a></li>
+      <li><a href="#" class="nav-link" data-seccion="cat-d">Categoría D</a></li>
+      <li><a href="#" class="nav-link" data-seccion="cat-e">Categoría E</a></li>
+      <li><a href="#" class="nav-link" data-seccion="cat-f">Categoría F</a></li>
+      <li><a href="#" class="nav-link" data-seccion="cat-g">Categoría G</a></li>
+      <li><a href="#" class="nav-link" data-seccion="cat-h">Categoría H</a></li>
+      <li><a href="#" class="nav-link" data-seccion="cat-i">Categoría I</a></li>
+      <li><a href="#" class="nav-link" data-seccion="cat-j">Categoría J</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <!-- PORTADA -->
+    <section class="seccion activa" id="portada">
+      <div class="portada-principal">
+        <div class="articulo">
+          <div class="articulo-imagen">[ Imagen principal ]</div>
+          <div class="articulo-categoria">Categoría A</div>
+          <div class="articulo-titulo">Titular principal de la noticia más importante del día</div>
+          <div class="articulo-texto">Aquí va el texto introductorio de la noticia destacada. Será la primera que verán los lectores al entrar a la página del periódico.</div>
+          <div class="articulo-autor">Por Nombre Apellido</div>
+        </div>
+        <div>
+          <div class="articulo" style="margin-bottom:24px">
+            <div class="articulo-categoria">Categoría B</div>
+            <div class="articulo-titulo">Segunda noticia destacada del día</div>
+            <div class="articulo-texto">Texto breve de introducción a esta noticia secundaria.</div>
+            <div class="articulo-autor">Por Nombre Apellido</div>
+          </div>
+          <div class="articulo">
+            <div class="articulo-categoria">Categoría C</div>
+            <div class="articulo-titulo">Tercera noticia en portada</div>
+            <div class="articulo-texto">Texto breve de introducción a esta noticia.</div>
+            <div class="articulo-autor">Por Nombre Apellido</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="portada-secundaria">
+        <div class="articulo">
+          <div class="articulo-imagen">[ Imagen ]</div>
+          <div class="articulo-categoria">Categoría D</div>
+          <div class="articulo-titulo">Noticia número cuatro</div>
+          <div class="articulo-texto">Texto breve de la noticia.</div>
+        </div>
+        <div class="articulo">
+          <div class="articulo-imagen">[ Imagen ]</div>
+          <div class="articulo-categoria">Categoría E</div>
+          <div class="articulo-titulo">Noticia número cinco</div>
+          <div class="articulo-texto">Texto breve de la noticia.</div>
+        </div>
+        <div class="articulo">
+          <div class="articulo-imagen">[ Imagen ]</div>
+          <div class="articulo-categoria">Categoría F</div>
+          <div class="articulo-titulo">Noticia número seis</div>
+          <div class="articulo-texto">Texto breve de la noticia.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATEGORÍA A -->
+    <section class="seccion" id="cat-a">
+      <div class="titulo-seccion"><span>—</span> Categoría A</div>
+      <div class="grid-articulos">
+        <div class="articulo">
+          <div class="articulo-imagen">[ Imagen ]</div>
+          <div class="articulo-titulo">Titular del artículo uno</div>
+          <div class="articulo-texto">Texto de ejemplo para este artículo. Aquí irá el contenido real cuando esté listo.</div>
+          <div class="articulo-autor">Por Nombre Apellido</div>
+        </div>
+        <div class="articulo">
+          <div class="articulo-imagen">[ Imagen ]</div>
+          <div class="articulo-titulo">Titular del artículo dos</div>
+          <div class="articulo-texto">Texto de ejemplo para este artículo.</div>
+          <div class="articulo-autor">Por Nombre Apellido</div>
+        </div>
+        <div class="articulo">
+          <div class="articulo-imagen">[ Imagen ]</div>
+          <div class="articulo-titulo">Titular del artículo tres</div>
+          <div class="articulo-texto">Texto de ejemplo para este artículo.</div>
+          <div class="articulo-autor">Por Nombre Apellido</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATEGORÍAS B a I (misma estructura) -->
+    <section class="seccion" id="cat-b">
+      <div class="titulo-seccion"><span>—</span> Categoría B</div>
+      <div class="grid-articulos">
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+      </div>
+    </section>
+
+    <section class="seccion" id="cat-c">
+      <div class="titulo-seccion"><span>—</span> Categoría C</div>
+      <div class="grid-articulos">
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+      </div>
+    </section>
+
+    <section class="seccion" id="cat-d">
+      <div class="titulo-seccion"><span>—</span> Categoría D</div>
+      <div class="grid-articulos">
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+      </div>
+    </section>
+
+    <section class="seccion" id="cat-e">
+      <div class="titulo-seccion"><span>—</span> Categoría E</div>
+      <div class="grid-articulos">
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+      </div>
+    </section>
+
+    <section class="seccion" id="cat-f">
+      <div class="titulo-seccion"><span>—</span> Categoría F</div>
+      <div class="grid-articulos">
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+      </div>
+    </section>
+
+    <section class="seccion" id="cat-g">
+      <div class="titulo-seccion"><span>—</span> Categoría G</div>
+      <div class="grid-articulos">
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+      </div>
+    </section>
+
+    <section class="seccion" id="cat-h">
+      <div class="titulo-seccion"><span>—</span> Categoría H</div>
+      <div class="grid-articulos">
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+      </div>
+    </section>
+
+    <section class="seccion" id="cat-i">
+      <div class="titulo-seccion"><span>—</span> Categoría I</div>
+      <div class="grid-articulos">
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+      </div>
+    </section>
+
+    <!-- CATEGORÍA J CON SUBCATEGORÍAS -->
+    <section class="seccion" id="cat-j">
+      <div class="titulo-seccion"><span>—</span> Categoría J</div>
+
+      <div class="subcategorias-nav">
+        <button class="subcategoria-btn activo" data-sub="sub-1">Subcategoría 1</button>
+        <button class="subcategoria-btn" data-sub="sub-2">Subcategoría 2</button>
+        <button class="subcategoria-btn" data-sub="sub-3">Subcategoría 3</button>
+      </div>
+
+      <div class="subcategoria-contenido activa" id="sub-1">
+        <div class="grid-articulos">
+          <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Artículo de subcategoría 1</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+          <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Artículo de subcategoría 1</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        </div>
+      </div>
+
+      <div class="subcategoria-contenido" id="sub-2">
+        <div class="grid-articulos">
+          <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Artículo de subcategoría 2</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+          <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Artículo de subcategoría 2</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        </div>
+      </div>
+
+      <div class="subcategoria-contenido" id="sub-3">
+        <div class="grid-articulos">
+          <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Artículo de subcategoría 3</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+          <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Artículo de subcategoría 3</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>© 2025 NOMBRE_PERIODICO — Todos los derechos reservados</p>
+  </footer>
+
+  <script>
+    // Fecha automática
+    const fecha = new Date();
+    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('fecha-actual').textContent = fecha.toLocaleDateString('es-ES', opciones);
+
+    // Navegación principal
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('activo'));
+        document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
+        link.classList.add('activo');
+        document.getElementById(link.dataset.seccion).classList.add('activa');
+      });
+    });
+
+    // Subcategorías
+    document.querySelectorAll('.subcategoria-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.subcategoria-btn').forEach(b => b.classList.remove('activo'));
+        document.querySelectorAll('.subcategoria-contenido').forEach(c => c.classList.remove('activa'));
+        btn.classList.add('activo');
+        document.getElementById(btn.dataset.sub).classList.add('activa');
+      });
+    });
+  </script>
+
+</body>
+</html>
