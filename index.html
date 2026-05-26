@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Noticiero Presen FESD</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
@@ -16,14 +16,11 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html, body {
-      height: 100%;
-    }
-
     body {
       background: var(--blanco);
       color: var(--negro);
       font-family: 'Source Serif 4', serif;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
@@ -31,61 +28,67 @@
     /* CABECERA */
     header {
       border-bottom: 4px solid var(--negro);
-      padding: 24px 20px 16px;
+      padding: 15px 10px;
       text-align: center;
+      background: var(--blanco);
     }
 
     .fecha-linea {
       display: flex;
       justify-content: space-between;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--gris);
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       letter-spacing: 0.05em;
     }
 
     .nombre-periodico {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(38px, 8vw, 96px);
+      font-size: clamp(32px, 7vw, 84px);
       font-weight: 900;
       letter-spacing: -0.02em;
       line-height: 1;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .lema {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--gris);
       font-style: italic;
       border-top: 1px solid var(--gris-claro);
       border-bottom: 1px solid var(--gris-claro);
-      padding: 6px 0;
-      margin-bottom: 0;
+      padding: 4px 0;
     }
 
-    /* NAVEGACIÓN CORREGIDA PARA MÓVILES (SCROLL HORIZONTAL BLINDADO) */
+    /* NAVEGACIÓN TOTALMENTE REPARADA PARA MÓVILES (HORIZONTAL Y VERTICAL) */
     nav {
       background: var(--negro);
       width: 100%;
-      /* Permite deslizar con el dedo horizontalmente si no cabe */
-      overflow-x: auto; 
-      overflow-y: hidden;
-      white-space: nowrap;
-      /* Suaviza el movimiento en iPhones y Android */
+      position: sticky;
+      top: 0;
+      z-index: 9999; /* Se asegura de estar siempre visible por encima de todo */
+      overflow-x: auto !important; 
+      overflow-y: hidden !important;
+      display: block !important; /* Evita que el navegador lo oculte */
       -webkit-overflow-scrolling: touch; 
     }
 
-    /* Ocultar barra de scroll visual para que quede más estético, pero que siga funcionando */
+    /* Ocultar barra de scroll visual manteniendo el arrastre */
     nav::-webkit-scrollbar {
       display: none;
     }
 
     nav ul {
-      display: flex;
+      display: flex !important;
+      flex-direction: row !important;
       list-style: none;
-      padding: 0 10px;
-      width: max-content; /* Obliga a mantenerse en una sola línea */
-      margin: 0 auto;
+      padding: 0 15px;
+      margin: 0;
+      width: max-content; /* Obliga a las categorías a alinearse en una fila infinita */
+    }
+
+    nav ul li {
+      display: inline-block;
     }
 
     nav ul li a {
@@ -93,13 +96,20 @@
       color: var(--blanco);
       text-decoration: none;
       font-size: 13px;
-      letter-spacing: 0.08em;
+      font-weight: bold;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
-      padding: 14px 16px;
+      padding: 14px 18px;
       transition: background 0.2s;
-      /* Evita por completo que el navegador parta las palabras por la mitad */
-      white-space: nowrap; 
-      word-break: keep-all;
+      /* CORDÓN DE SEGURIDAD: Impide por completo romper palabras o atascar el scroll */
+      white-space: nowrap !important; 
+      word-break: normal !important;
+      word-wrap: normal !important;
+    }
+
+    /* Margen extra al último elemento para que el dedo pueda arrastrar cómodamente más allá de "Tiempo" */
+    nav ul li:last-child a {
+      padding-right: 40px; 
     }
 
     nav ul li a:hover,
@@ -111,9 +121,9 @@
     main {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 24px 20px;
-      flex: 1 0 auto;
+      padding: 20px;
       width: 100%;
+      flex: 1;
     }
 
     .seccion {
@@ -121,69 +131,62 @@
     }
 
     .seccion.activa {
-      display: block;
+      display: block !important;
     }
 
     .titulo-seccion {
       font-family: 'Playfair Display', serif;
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 700;
       border-bottom: 3px solid var(--negro);
-      padding-bottom: 8px;
-      margin-bottom: 24px;
+      padding-bottom: 6px;
+      margin-bottom: 20px;
     }
 
     .titulo-seccion span { color: var(--acento); }
 
-    /* SUB-GRID COLEGIO (3 COLUMNAS) */
+    /* GRIDS COLEGIO */
     .grid-colegio-subcategorias {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      gap: 20px;
     }
 
     .columna-subcategoria {
       background: rgba(0,0,0,0.02);
-      padding: 16px;
+      padding: 15px;
       border-top: 2px solid var(--negro);
     }
 
     .columna-subcategoria h3 {
       font-family: 'Playfair Display', serif;
-      font-size: 20px;
+      font-size: 18px;
       color: var(--acento);
-      margin-bottom: 20px;
-      text-transform: capitalize;
+      margin-bottom: 15px;
       border-bottom: 1px dashed var(--gris-claro);
-      padding-bottom: 6px;
+      padding-bottom: 4px;
     }
 
     /* GRIDS GENERALES */
     .grid-articulos {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 32px;
+      gap: 25px;
     }
 
     .articulo {
       border-bottom: 1px solid var(--gris-claro);
-      padding-bottom: 24px;
-      margin-bottom: 20px;
+      padding-bottom: 20px;
+      margin-bottom: 15px;
       cursor: pointer;
-      transition: opacity 0.2s;
     }
-    
-    .articulo:hover { opacity: 0.85; }
 
     .articulo-imagen-wrapper {
       width: 100%;
-      height: 200px;
+      height: 180px;
       background: var(--gris-claro);
-      margin-bottom: 14px;
+      margin-bottom: 10px;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     .articulo-imagen-wrapper img {
@@ -195,213 +198,179 @@
     .articulo-categoria {
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
       color: var(--acento);
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .articulo-titulo {
       font-family: 'Playfair Display', serif;
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 8px;
+      line-height: 1.25;
+      margin-bottom: 6px;
     }
 
     .articulo-texto {
       font-size: 14px;
       color: var(--gris);
-      line-height: 1.7;
+      line-height: 1.6;
     }
 
     .articulo-autor {
       font-size: 12px;
       color: var(--gris);
-      margin-top: 10px;
+      margin-top: 8px;
       font-style: italic;
     }
 
     /* PORTADA */
-    .portada-contenedor { display: block; }
-    
     .portada-vacia-aviso {
       text-align: center;
-      padding: 60px 20px;
+      padding: 40px 15px;
       border: 1px dashed var(--gris-claro);
       background: #fff;
-      font-family: 'Playfair Display', serif;
     }
-    .portada-vacia-aviso h3 { font-size: 22px; margin-bottom: 8px; }
-    .portada-vacia-aviso p { font-size: 14px; color: var(--gris); font-style: italic; }
 
     .portada-principal {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      gap: 32px;
-      margin-bottom: 40px;
-      padding-bottom: 40px;
+      gap: 25px;
+      margin-bottom: 30px;
+      padding-bottom: 30px;
       border-bottom: 2px solid var(--negro);
     }
 
-    .portada-principal .articulo-imagen-wrapper { height: 350px; }
-    .portada-principal .articulo-titulo { font-size: 32px; }
+    .portada-principal .articulo-imagen-wrapper { height: 320px; }
+    .portada-principal .articulo-titulo { font-size: 28px; }
 
     .portada-secundaria {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      gap: 20px;
     }
-
-    .articulo:empty { display: none !important; }
 
     /* VISTA INTERIOR NOTICIA */
     .vista-noticia {
-      max-width: 800px;
+      max-width: 750px;
       margin: 0 auto;
       display: none;
     }
     
     .btn-volver {
-      display: inline-block;
+      display: block;
       background: var(--negro);
       color: var(--blanco);
-      padding: 12px 20px;
+      padding: 12px;
       text-decoration: none;
       font-size: 13px;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       cursor: pointer;
       font-weight: bold;
-      border-radius: 4px;
-      width: 100%;
       text-align: center;
+      border-radius: 4px;
     }
-    .btn-volver:hover { background: var(--acento); }
 
     .noticia-completa-cabecera {
       border-bottom: 1px solid var(--negro);
-      padding-bottom: 16px;
-      margin-bottom: 24px;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
     }
 
     .noticia-completa-titulo {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(28px, 6vw, 42px);
+      font-size: clamp(24px, 6vw, 38px);
       font-weight: 900;
-      line-height: 1.15;
-      margin-bottom: 12px;
+      line-height: 1.2;
+      margin-bottom: 10px;
     }
 
     .noticia-completa-galeria {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .noticia-completa-galeria img {
       width: 100%;
-      max-height: 450px;
+      max-height: 400px;
       object-fit: cover;
-      background: var(--gris-claro);
     }
 
     .noticia-completa-galeria-secundarias {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 10px;
+      margin-top: 10px;
     }
-    .noticia-completa-galeria-secundarias img { max-height: 250px; }
+    .noticia-completa-galeria-secundarias img { max-height: 200px; }
 
     .noticia-completa-cuerpo {
-      font-size: 17px;
-      line-height: 1.8;
-      color: #222;
+      font-size: 16px;
+      line-height: 1.7;
       white-space: pre-wrap;
     }
 
-    /* PANEL EDITORIAL CONTRASEÑA */
+    /* PANEL EDITORIAL */
     .admin-panel {
-      max-width: 950px;
-      margin: 40px auto;
-      padding: 24px;
+      margin: 30px auto;
+      padding: 20px;
       background: #fff;
       border: 2px dashed var(--negro);
     }
-    .admin-panel h2 { font-family: 'Playfair Display', serif; margin-bottom: 16px; }
-    .form-row { display: flex; gap: 16px; }
-    .form-group { margin-bottom: 14px; flex: 1; }
-    .form-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px; }
-    .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ccc; font-family: sans-serif; }
-    .form-group input[type="file"] { border: none; padding: 4px 0; font-size: 12px; }
+    .form-row { display: flex; gap: 15px; }
+    .form-group { margin-bottom: 12px; flex: 1; width: 100%; }
+    .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 4px; }
+    .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ccc; }
 
-    .selector-destinos-container {
-      background: #f4f6f7;
-      padding: 14px;
-      border: 1px solid #dcdfe1;
-      margin-bottom: 14px;
-      border-radius: 4px;
-    }
-    .selector-destinos-container h4 { font-size: 13px; margin-bottom: 10px; color: var(--negro); }
-    .bloque-checkboxes {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 16px;
-    }
-    .col-checkbox { display: flex; flex-direction: column; gap: 6px; }
-    .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
-    .checkbox-item input { width: auto; cursor: pointer; }
-    .subtitulo-checkbox { font-size: 11px; font-weight: bold; text-transform: uppercase; color: var(--acento); margin-bottom: 4px; border-bottom: 1px solid #e1e4e6; padding-bottom: 2px; }
+    .selector-destinos-container { background: #f4f6f7; padding: 12px; margin-bottom: 12px; }
+    .bloque-checkboxes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+    .col-checkbox { display: flex; flex-direction: column; gap: 5px; }
+    .checkbox-item { display: flex; align-items: center; gap: 5px; font-size: 12px; }
+    .subtitulo-checkbox { font-size: 11px; font-weight: bold; color: var(--acento); margin-bottom: 4px; border-bottom: 1px solid #e1e4e6; }
 
-    .admin-botones { display: flex; gap: 12px; margin-top: 18px; }
-    .btn-aprobar { background: #27ae60; color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; }
-    .btn-cancelar { background: #7f8c8d; color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; }
-    
-    .resultado-codigo { background: #eee; padding: 12px; margin-top: 16px; border: 1px solid #ccc; white-space: pre-wrap; font-family: monospace; font-size: 12px; display: none; color: #111; }
+    .admin-botones { display: flex; gap: 10px; }
+    .btn-aprobar { background: #27ae60; color: white; padding: 10px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-cancelar { background: #7f8c8d; color: white; padding: 10px; border: none; cursor: pointer; font-weight: bold; }
+    .resultado-codigo { background: #eee; padding: 10px; margin-top: 15px; font-family: monospace; font-size: 11px; display: none; }
 
-    /* FOOTER INTEGRADO AL FONDO */
     footer {
       background: var(--negro);
       color: var(--gris-claro);
       text-align: center;
-      padding: 20px;
-      font-size: 13px;
-      letter-spacing: 0.05em;
-      width: 100%;
-      flex-shrink: 0;
-      border-top: 3px solid var(--acento);
+      padding: 15px;
+      font-size: 12px;
+      margin-top: auto;
     }
 
-    /* PANTALLAS MEDIANAS Y MÓVILES (ADAPTACIONES) */
-    @media (max-width: 950px) {
-      .grid-colegio-subcategorias { grid-template-columns: 1fr; gap: 32px; }
+    /* RESPONSIVE EXTREMO (MÓVILES HORIZONTAL/VERTICAL) */
+    @media (max-width: 900px) {
+      .grid-colegio-subcategorias { grid-template-columns: 1fr; }
       .bloque-checkboxes { grid-template-columns: 1fr 1fr; }
     }
-    @media (max-width: 768px) {
-      .portada-principal { grid-template-columns: 1fr; gap: 16px; }
-      .portada-principal .articulo-imagen-wrapper { height: 250px; }
+    @media (max-width: 600px) {
+      .portada-principal { grid-template-columns: 1fr; }
+      .portada-principal .articulo-imagen-wrapper { height: 200px; }
       .portada-secundaria { grid-template-columns: 1fr; }
-      .form-row { flex-direction: column; gap: 0; }
+      .form-row { flex-direction: column; }
       .bloque-checkboxes { grid-template-columns: 1fr; }
-      nav ul { justify-content: flex-start; }
-      .btn-volver { width: 100%; display: block; }
+      header { padding: 10px 5px; }
     }
   </style>
 </head>
 <body>
 
+  <!-- CABECERA -->
   <header>
     <div class="fecha-linea">
       <span id="fecha-actual"></span>
-      <span style="cursor: pointer; font-weight: bold;" id="btn-secreto">⚙️ Edición digital</span>
+      <span style="cursor: pointer; font-weight: bold;" id="btn-secreto">⚙️ Redacción</span>
     </div>
     <div class="nombre-periodico">Noticiero Presen FESD</div>
     <div class="lema">Todo lo que importa, en un solo lugar</div>
   </header>
 
-  <nav>
+  <!-- NAVEGACIÓN (SIEMPRE FIJA Y VISIBLE) -->
+  <nav id="barra-navegacion-principal">
     <ul>
       <li><a href="#" class="nav-link activo" data-seccion="portada">Portada</a></li>
       <li><a href="#" class="nav-link" data-seccion="colegio">Colegio</a></li>
@@ -413,9 +382,11 @@
     </ul>
   </nav>
 
+  <!-- CONTENIDO -->
   <main>
+    <!-- DETALLE NOTICIA -->
     <section id="vista-noticia-completa" class="vista-noticia">
-      <div class="btn-volver" onclick="volverAPortada()">← Volver al periódico</div>
+      <div class="btn-volver" onclick="volverAPortada()">← Volver al listado</div>
       <article>
         <div class="noticia-completa-cabecera">
           <div class="articulo-categoria" id="det-categoria">CATEGORÍA</div>
@@ -433,16 +404,17 @@
       </article>
     </section>
 
+    <!-- PORTADA -->
     <section class="seccion activa" id="portada">
       <div class="portada-vacia-aviso" id="aviso-portada-vacia">
         <h3>Edición en preparación</h3>
-        <p>Actualmente la mesa de redacción está seleccionando las noticias destacadas para la portada.</p>
+        <p>Actualmente la mesa de redacción está seleccionando las noticias para la portada.</p>
       </div>
       <div class="portada-contenedor" id="bloques-portada" style="display: none;">
         <div class="portada-principal">
           <div class="articulo" id="hueco-portada-principal" onclick="verNoticiaCompleta(this)"></div>
           <div>
-            <div class="articulo" id="hueco-portada-lateral-1" style="margin-bottom:24px" onclick="verNoticiaCompleta(this)"></div>
+            <div class="articulo" id="hueco-portada-lateral-1" style="margin-bottom:20px" onclick="verNoticiaCompleta(this)"></div>
             <div class="articulo" id="hueco-portada-lateral-2" onclick="verNoticiaCompleta(this)"></div>
           </div>
         </div>
@@ -454,6 +426,7 @@
       </div>
     </section>
 
+    <!-- COLEGIO -->
     <section class="seccion" id="colegio">
       <div class="titulo-seccion"><span>—</span> Crónicas del Colegio</div>
       <div class="grid-colegio-subcategorias">
@@ -472,181 +445,139 @@
       </div>
     </section>
 
+    <!-- SECCIONES -->
     <section class="seccion" id="deportes"><div class="titulo-seccion"><span>—</span> Deportes</div><div class="grid-articulos" id="contenedor-deportes"></div></section>
     <section class="seccion" id="granada"><div class="titulo-seccion"><span>—</span> Granada</div><div class="grid-articulos" id="contenedor-granada"></div></section>
     <section class="seccion" id="gastronomia"><div class="titulo-seccion"><span>—</span> Gastronomía</div><div class="grid-articulos" id="contenedor-gastronomia"></div></section>
     <section class="seccion" id="salud"><div class="titulo-seccion"><span>—</span> Salud</div><div class="grid-articulos" id="contenedor-salud"></div></section>
     <section class="seccion" id="tiempo"><div class="titulo-seccion"><span>—</span> Tiempo</div><div class="grid-articulos" id="contenedor-tiempo"></div></section>
 
+    <!-- PANEL EDITORIAL PROTEGIDO -->
     <section id="panel-editor" class="admin-panel" style="display: none;">
-      <h2>Mesa de Redacción: Filtros del Colegio y Periódico</h2>
-      <p style="font-size: 13px; color: var(--gris); margin-bottom: 15px;">Redacta e inyecta noticias en los bloques elegidos.</p>
+      <h2>Mesa de Redacción</h2>
+      <div class="form-row">
+        <div class="form-group"><label>Título:</label><input type="text" id="adm-titulo"></div>
+        <div class="form-group"><label>Autor:</label><input type="text" id="adm-autor"></div>
+      </div>
+      <div class="form-group"><label>Etiqueta Visual:</label><input type="text" id="adm-etiqueta"></div>
       
-      <div class="form-row">
-        <div class="form-group">
-          <label>Título de la Noticia:</label>
-          <input type="text" id="adm-titulo" placeholder="Ej: Gran gymkana por el día del colegio">
-        </div>
-        <div class="form-group">
-          <label>Autor:</label>
-          <input type="text" id="adm-autor" placeholder="Ej: Alumnos de 4º ESO">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Etiqueta Temática Visual:</label>
-          <input type="text" id="adm-etiqueta" placeholder="Ej: COLEGIO - FESTEJOS">
-        </div>
-      </div>
-
       <div class="selector-destinos-container">
-        <h4>Selecciona los destinos exactos de publicación:</h4>
         <div class="bloque-checkboxes">
           <div class="col-checkbox">
-            <div class="subtitulo-checkbox">Subcategorías Colegio</div>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="col-festejos"> 🎉 Festejos</label>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="col-excursiones"> 🚌 Excursiones</label>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="col-curiosidades"> 💡 Curiosidades</label>
+            <div class="subtitulo-checkbox">Colegio</div>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="col-festejos"> Festejos</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="col-excursiones"> Excursiones</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="col-curiosidades"> Curiosidades</label>
           </div>
           <div class="col-checkbox">
-            <div class="subtitulo-checkbox">Secciones del Periódico</div>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-deport"> Sección Deportes</label>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-granada"> Sección Granada</label>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-gastronomia"> Sección Gastronomía</label>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-salud"> Sección Salud</label>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-tiempo"> Sección Tiempo</label>
+            <div class="subtitulo-checkbox">Secciones</div>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-deport"> Deportes</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-granada"> Granada</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-gastronomia"> Gastronomía</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-salud"> Salud</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-tiempo"> Tiempo</label>
           </div>
           <div class="col-checkbox">
-            <div class="subtitulo-checkbox">Bloques de Portada</div>
+            <div class="subtitulo-checkbox">Portada</div>
             <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-principal"> Titular Grande</label>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-lateral-1"> Lateral Superior</label>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-lateral-2"> Lateral Inferior</label>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-faldon-1"> Faldón Izq.</label>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-faldon-2"> Faldón Centro</label>
-            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-faldon-3"> Faldón Der.</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-lateral-1"> Lateral Sup.</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-lateral-2"> Lateral Inf.</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-faldon-1"> Faldón 1</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-faldon-2"> Faldón 2</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-faldon-3"> Faldón 3</label>
           </div>
         </div>
       </div>
 
-      <div style="background: #fdfaf4; padding: 12px; border: 1px solid var(--gris-claro); margin-bottom: 14px;">
-        <h4 style="font-size:13px; margin-bottom:8px;">Fotografías:</h4>
-        <div class="form-group">
-          <label>1. Imagen de Cabecera (Obligatoria):</label>
-          <input type="file" id="adm-file1" accept="image/*">
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>2. Foto Secundaria (Opcional):</label>
-            <input type="file" id="adm-file2" accept="image/*">
-          </div>
-          <div class="form-group">
-            <label>3. Tercera Foto (Opcional):</label>
-            <input type="file" id="adm-file3" accept="image/*">
-          </div>
-        </div>
+      <div class="form-group"><label>Foto Principal:</label><input type="file" id="adm-file1" accept="image/*"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Foto 2:</label><input type="file" id="adm-file2" accept="image/*"></div>
+        <div class="form-group"><label>Foto 3:</label><input type="file" id="adm-file3" accept="image/*"></div>
       </div>
-
-      <div class="form-group">
-        <label>Entradilla / Resumen Corto:</label>
-        <input type="text" id="adm-resumen" placeholder="Frase breve...">
-      </div>
-
-      <div class="form-group">
-        <label>Cuerpo completo:</label>
-        <textarea id="adm-texto" rows="6" placeholder="Escribe aquí..."></textarea>
-      </div>
-
+      <div class="form-group"><label>Resumen Corto:</label><input type="text" id="adm-resumen"></div>
+      <div class="form-group"><label>Cuerpo:</label><textarea id="adm-texto" rows="5"></textarea></div>
       <div class="admin-botones">
-        <button type="button" class="btn-aprobar" onclick="procesarNoticiaConArchivos()">Publicar e Inyectar Reportaje</button>
-        <button type="button" class="btn-cancelar" onclick="cancelarNoticia()">Borrar Todo</button>
+        <button type="button" class="btn-aprobar" onclick="procesarNoticiaConArchivos()">Publicar</button>
+        <button type="button" class="btn-cancelar" onclick="cancelarNoticia()">Borrar</button>
       </div>
       <div id="codigo-salida" class="resultado-codigo"></div>
     </section>
   </main>
 
   <footer>
-    <p>© 2026 Noticiero Presen FESD — Taller de Periodismo Digital</p>
+    <p>© 2026 Noticiero Presen FESD</p>
   </footer>
 
   <script>
-    // Fecha automatizada
     const fecha = new Date();
     document.getElementById('fecha-actual').textContent = fecha.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-    // Control de navegación menú
+    // Manejo de la navegación limpia
     document.querySelectorAll('.nav-link').forEach(link => {
       link.addEventListener('click', e => {
         e.preventDefault();
-        volverAPortada();
+        
+        // Al pulsar en cualquier categoría, forzamos el cierre de la noticia interior
+        document.getElementById('vista-noticia-completa').style.display = 'none';
+        
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('activo'));
         document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
+        
         link.classList.add('activo');
-        document.getElementById(link.dataset.seccion).classList.add('activa');
+        const destino = link.getAttribute('data-seccion');
+        document.getElementById(destino).classList.add('activa');
+        window.scrollTo(0,0);
       });
     });
 
-    // SISTEMA LOCAL E INTERNET COMPATIBLE
     const CLAVE_ENCRIPTADA = "cHJlc2Vu"; 
-
     document.getElementById('btn-secreto').addEventListener('click', () => {
-      const intento = prompt("Introduce la clave de la Mesa de Redacción:");
+      const intento = prompt("Introduce la clave:");
       if (!intento) return;
-      const intentoLimpio = intento.trim();
-      
-      if (btoa(intentoLimpio) === CLAVE_ENCRIPTADA) {
+      if (btoa(intento.trim()) === CLAVE_ENCRIPTADA) {
         document.getElementById('panel-editor').style.display = 'block';
         document.getElementById('panel-editor').scrollIntoView({ behavior: 'smooth' });
       } else {
-        alert("Clave incorrecta. Acceso denegado.");
+        alert("Clave incorrecta.");
       }
     });
 
-    // Abrir noticia e inyectar estado en el historial (Arreglo para el botón de "Atrás" físico)
     function verNoticiaCompleta(elemento) {
       const titulo = elemento.getAttribute('data-titulo');
-      const categoria = elemento.getAttribute('data-categoria');
-      const autor = elemento.getAttribute('data-autor');
-      const cuerpo = elemento.getAttribute('data-cuerpo');
-      const f1 = elemento.getAttribute('data-foto1');
-      const f2 = elemento.getAttribute('data-foto2');
-      const f3 = elemento.getAttribute('data-foto3');
       if (!titulo) return;
 
       document.getElementById('det-titulo').innerText = titulo;
-      document.getElementById('det-categoria').innerText = categoria;
-      document.getElementById('det-autor').innerText = autor;
-      document.getElementById('det-cuerpo').innerText = cuerpo;
-      document.getElementById('det-foto1').src = f1 || '';
+      document.getElementById('det-categoria').innerText = elemento.getAttribute('data-categoria');
+      document.getElementById('det-autor').innerText = elemento.getAttribute('data-autor');
+      document.getElementById('det-cuerpo').innerText = elemento.getAttribute('data-cuerpo');
+      document.getElementById('det-foto1').src = elemento.getAttribute('data-foto1') || '';
       
+      const f2 = elemento.getAttribute('data-foto2');
       const img2 = document.getElementById('det-foto2');
       if(f2 && f2 !== "null" && f2 !== "") { img2.src = f2; img2.style.display = 'block'; } else { img2.style.display = 'none'; }
       
+      const f3 = elemento.getAttribute('data-foto3');
       const img3 = document.getElementById('det-foto3');
       if(f3 && f3 !== "null" && f3 !== "") { img3.src = f3; img3.style.display = 'block'; } else { img3.style.display = 'none'; }
 
+      // Ocultamos las secciones normales pero LA BARRA DE MENÚ SIGUE VISIBLE ARRIBA
       document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
       document.getElementById('vista-noticia-completa').style.display = 'block';
       window.scrollTo(0,0);
 
-      // Crea un "paso virtual" en el historial para que el botón atrás físico del móvil funcione
       if(window.history.state !== "noticia") {
         window.history.pushState("noticia", "");
       }
     }
 
-    // Volver atrás controlado
     function volverAPortada() {
       document.getElementById('vista-noticia-completa').style.display = 'none';
       const seccionActiva = document.querySelector('.nav-link.activo').getAttribute('data-seccion');
-      const destinoSeccion = document.getElementById(seccionActiva);
-      if(destinoSeccion) {
-        destinoSeccion.classList.add('activa');
-      }
+      document.getElementById(seccionActiva).classList.add('activa');
+      window.scrollTo(0,0);
     }
 
-    // Escucha si el usuario usa el botón físico de "Ir atrás" en Android/iPhone
-    window.addEventListener('popstate', function(event) {
+    window.addEventListener('popstate', function() {
       volverAPortada();
     });
 
@@ -663,7 +594,7 @@
       const checkboxesMarcados = document.querySelectorAll('input[name="destino-pub"]:checked');
 
       if(!titulo || !textoCompleto || !resumen || checkboxesMarcados.length === 0) {
-        alert("Completa los campos obligatorios y selecciona un destino.");
+        alert("Faltan datos.");
         return;
       }
 
@@ -691,7 +622,7 @@
       const etiqueta = document.getElementById('adm-etiqueta').value || "Colegio";
       const resumen = document.getElementById('adm-resumen').value;
       const textoCompleto = document.getElementById('adm-texto').value;
-      const srcF1 = f1 || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100%" height="100%" fill="%23e8e4db"/><text x="50%" y="50%" font-family="sans-serif" font-size="10" fill="%23555" text-anchor="middle" dominant-baseline="middle">[Sin Foto]</text></svg>';
+      const srcF1 = f1 || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100%" height="100%" fill="%23e8e4db"/></svg>';
 
       const innerHTMLArticulo = `
         <div class="articulo-imagen-wrapper"><img src="${srcF1}"></div>
@@ -742,10 +673,8 @@
         document.getElementById('bloques-portada').style.display = 'block';
       }
 
-      const cajaCodigo = document.getElementById('codigo-salida');
-      cajaCodigo.style.display = 'block';
-      cajaCodigo.innerText = `¡Publicado!\n\nPLANTILLA PARA GUARDAR EN EL BLOC DE NOTAS:\n<div class="articulo" data-titulo="${tEscaped}" data-categoria="${etiqueta}" data-autor="${autor}" data-cuerpo="${cEscaped}" data-foto1="nombre_imagen.jpg" data-foto2="" data-foto3="" onclick="verNoticiaCompleta(this)">\n  <div class="articulo-imagen-wrapper"><img src="nombre_imagen.jpg"></div>\n  <div class="articulo-categoria">${etiqueta}</div>\n  <div class="articulo-titulo">${titulo}</div>\n  <div class="articulo-texto">${resumen}</div>\n  <div class="articulo-autor">${autor}</div>\n</div>`;
-      alert("¡Inyectado!");
+      alert("¡Noticia publicada con éxito en las secciones seleccionadas!");
+      cancelarNoticia();
     }
   </script>
 </body>
