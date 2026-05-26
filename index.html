@@ -31,7 +31,7 @@
     /* CABECERA */
     header {
       border-bottom: 4px solid var(--negro);
-      padding: 24px 40px 16px;
+      padding: 24px 20px 16px;
       text-align: center;
     }
 
@@ -46,7 +46,7 @@
 
     .nombre-periodico {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(48px, 8vw, 96px);
+      font-size: clamp(38px, 8vw, 96px);
       font-weight: 900;
       letter-spacing: -0.02em;
       line-height: 1;
@@ -63,29 +63,43 @@
       margin-bottom: 0;
     }
 
-    /* NAVEGACIÓN */
+    /* NAVEGACIÓN CORREGIDA PARA MÓVILES (SCROLL HORIZONTAL BLINDADO) */
     nav {
       background: var(--negro);
-      padding: 0 20px;
-      overflow-x: auto;
+      width: 100%;
+      /* Permite deslizar con el dedo horizontalmente si no cabe */
+      overflow-x: auto; 
+      overflow-y: hidden;
+      white-space: nowrap;
+      /* Suaviza el movimiento en iPhones y Android */
+      -webkit-overflow-scrolling: touch; 
+    }
+
+    /* Ocultar barra de scroll visual para que quede más estético, pero que siga funcionando */
+    nav::-webkit-scrollbar {
+      display: none;
     }
 
     nav ul {
       display: flex;
       list-style: none;
-      justify-content: center;
+      padding: 0 10px;
+      width: max-content; /* Obliga a mantenerse en una sola línea */
+      margin: 0 auto;
     }
 
     nav ul li a {
       display: block;
       color: var(--blanco);
       text-decoration: none;
-      font-size: 12px;
+      font-size: 13px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 12px 14px;
+      padding: 14px 16px;
       transition: background 0.2s;
-      white-space: nowrap;
+      /* Evita por completo que el navegador parta las palabras por la mitad */
+      white-space: nowrap; 
+      word-break: keep-all;
     }
 
     nav ul li a:hover,
@@ -97,7 +111,7 @@
     main {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 32px 40px;
+      padding: 24px 20px;
       flex: 1 0 auto;
       width: 100%;
     }
@@ -147,7 +161,7 @@
     /* GRIDS GENERALES */
     .grid-articulos {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 32px;
     }
 
@@ -252,13 +266,17 @@
       display: inline-block;
       background: var(--negro);
       color: var(--blanco);
-      padding: 8px 16px;
+      padding: 12px 20px;
       text-decoration: none;
-      font-size: 12px;
+      font-size: 13px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 24px;
       cursor: pointer;
+      font-weight: bold;
+      border-radius: 4px;
+      width: 100%;
+      text-align: center;
     }
     .btn-volver:hover { background: var(--acento); }
 
@@ -270,7 +288,7 @@
 
     .noticia-completa-titulo {
       font-family: 'Playfair Display', serif;
-      font-size: 42px;
+      font-size: clamp(28px, 6vw, 42px);
       font-weight: 900;
       line-height: 1.15;
       margin-bottom: 12px;
@@ -298,7 +316,7 @@
     .noticia-completa-galeria-secundarias img { max-height: 250px; }
 
     .noticia-completa-cuerpo {
-      font-size: 18px;
+      font-size: 17px;
       line-height: 1.8;
       color: #222;
       white-space: pre-wrap;
@@ -356,22 +374,24 @@
       border-top: 3px solid var(--acento);
     }
 
+    /* PANTALLAS MEDIANAS Y MÓVILES (ADAPTACIONES) */
     @media (max-width: 950px) {
       .grid-colegio-subcategorias { grid-template-columns: 1fr; gap: 32px; }
       .bloque-checkboxes { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 768px) {
-      .portada-principal { grid-template-columns: 1fr; }
+      .portada-principal { grid-template-columns: 1fr; gap: 16px; }
+      .portada-principal .articulo-imagen-wrapper { height: 250px; }
       .portada-secundaria { grid-template-columns: 1fr; }
-      .noticia-completa-titulo { font-size: 30px; }
       .form-row { flex-direction: column; gap: 0; }
       .bloque-checkboxes { grid-template-columns: 1fr; }
+      nav ul { justify-content: flex-start; }
+      .btn-volver { width: 100%; display: block; }
     }
   </style>
 </head>
 <body>
 
-  <!-- CABECERA -->
   <header>
     <div class="fecha-linea">
       <span id="fecha-actual"></span>
@@ -381,7 +401,6 @@
     <div class="lema">Todo lo que importa, en un solo lugar</div>
   </header>
 
-  <!-- NAVEGACIÓN -->
   <nav>
     <ul>
       <li><a href="#" class="nav-link activo" data-seccion="portada">Portada</a></li>
@@ -394,9 +413,7 @@
     </ul>
   </nav>
 
-  <!-- CONTENIDO -->
   <main>
-    <!-- DETALLE NOTICIA -->
     <section id="vista-noticia-completa" class="vista-noticia">
       <div class="btn-volver" onclick="volverAPortada()">← Volver al periódico</div>
       <article>
@@ -416,7 +433,6 @@
       </article>
     </section>
 
-    <!-- PORTADA -->
     <section class="seccion activa" id="portada">
       <div class="portada-vacia-aviso" id="aviso-portada-vacia">
         <h3>Edición en preparación</h3>
@@ -438,7 +454,6 @@
       </div>
     </section>
 
-    <!-- COLEGIO -->
     <section class="seccion" id="colegio">
       <div class="titulo-seccion"><span>—</span> Crónicas del Colegio</div>
       <div class="grid-colegio-subcategorias">
@@ -457,14 +472,12 @@
       </div>
     </section>
 
-    <!-- SECCIONES -->
     <section class="seccion" id="deportes"><div class="titulo-seccion"><span>—</span> Deportes</div><div class="grid-articulos" id="contenedor-deportes"></div></section>
     <section class="seccion" id="granada"><div class="titulo-seccion"><span>—</span> Granada</div><div class="grid-articulos" id="contenedor-granada"></div></section>
     <section class="seccion" id="gastronomia"><div class="titulo-seccion"><span>—</span> Gastronomía</div><div class="grid-articulos" id="contenedor-gastronomia"></div></section>
     <section class="seccion" id="salud"><div class="titulo-seccion"><span>—</span> Salud</div><div class="grid-articulos" id="contenedor-salud"></div></section>
     <section class="seccion" id="tiempo"><div class="titulo-seccion"><span>—</span> Tiempo</div><div class="grid-articulos" id="contenedor-tiempo"></div></section>
 
-    <!-- PANEL EDITORIAL PROTEGIDO -->
     <section id="panel-editor" class="admin-panel" style="display: none;">
       <h2>Mesa de Redacción: Filtros del Colegio y Periódico</h2>
       <p style="font-size: 13px; color: var(--gris); margin-bottom: 15px;">Redacta e inyecta noticias en los bloques elegidos.</p>
@@ -561,7 +574,7 @@
     const fecha = new Date();
     document.getElementById('fecha-actual').textContent = fecha.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-    // Menú
+    // Control de navegación menú
     document.querySelectorAll('.nav-link').forEach(link => {
       link.addEventListener('click', e => {
         e.preventDefault();
@@ -573,18 +586,14 @@
       });
     });
 
-    // SISTEMA LOCAL E INTERNET COMPATIBLE (MÁXIMA COMPATIBILIDAD)
-    // El texto codificado equivale a la clave "presen"
+    // SISTEMA LOCAL E INTERNET COMPATIBLE
     const CLAVE_ENCRIPTADA = "cHJlc2Vu"; 
 
     document.getElementById('btn-secreto').addEventListener('click', () => {
       const intento = prompt("Introduce la clave de la Mesa de Redacción:");
       if (!intento) return;
-      
-      // Limpia espacios al principio y final
       const intentoLimpio = intento.trim();
       
-      // Comprobación compatible con local (file:///) e internet
       if (btoa(intentoLimpio) === CLAVE_ENCRIPTADA) {
         document.getElementById('panel-editor').style.display = 'block';
         document.getElementById('panel-editor').scrollIntoView({ behavior: 'smooth' });
@@ -593,6 +602,7 @@
       }
     });
 
+    // Abrir noticia e inyectar estado en el historial (Arreglo para el botón de "Atrás" físico)
     function verNoticiaCompleta(elemento) {
       const titulo = elemento.getAttribute('data-titulo');
       const categoria = elemento.getAttribute('data-categoria');
@@ -618,13 +628,27 @@
       document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
       document.getElementById('vista-noticia-completa').style.display = 'block';
       window.scrollTo(0,0);
+
+      // Crea un "paso virtual" en el historial para que el botón atrás físico del móvil funcione
+      if(window.history.state !== "noticia") {
+        window.history.pushState("noticia", "");
+      }
     }
 
+    // Volver atrás controlado
     function volverAPortada() {
       document.getElementById('vista-noticia-completa').style.display = 'none';
       const seccionActiva = document.querySelector('.nav-link.activo').getAttribute('data-seccion');
-      document.getElementById(seccionActiva).classList.add('activa');
+      const destinoSeccion = document.getElementById(seccionActiva);
+      if(destinoSeccion) {
+        destinoSeccion.classList.add('activa');
+      }
     }
+
+    // Escucha si el usuario usa el botón físico de "Ir atrás" en Android/iPhone
+    window.addEventListener('popstate', function(event) {
+      volverAPortada();
+    });
 
     function cancelarNoticia() {
       document.querySelectorAll('#panel-editor input[type="text"], #panel-editor textarea, #panel-editor input[type="file"]').forEach(i => i.value = '');
