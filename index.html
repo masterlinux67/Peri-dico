@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NOMBRE_PERIODICO</title>
+  <title>Noticiero Presen FESD</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -16,10 +16,16 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html, body {
+      height: 100%;
+    }
+
     body {
       background: var(--blanco);
       color: var(--negro);
       font-family: 'Source Serif 4', serif;
+      display: flex;
+      flex-direction: column;
     }
 
     /* CABECERA */
@@ -60,14 +66,13 @@
     /* NAVEGACIÓN */
     nav {
       background: var(--negro);
-      padding: 0 40px;
+      padding: 0 20px;
       overflow-x: auto;
     }
 
     nav ul {
       display: flex;
       list-style: none;
-      gap: 0;
       justify-content: center;
     }
 
@@ -76,10 +81,9 @@
       color: var(--blanco);
       text-decoration: none;
       font-size: 12px;
-      font-family: 'Source Serif 4', serif;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 12px 16px;
+      padding: 12px 14px;
       transition: background 0.2s;
       white-space: nowrap;
     }
@@ -94,9 +98,10 @@
       max-width: 1200px;
       margin: 0 auto;
       padding: 32px 40px;
+      flex: 1 0 auto;
+      width: 100%;
     }
 
-    /* SECCIÓN */
     .seccion {
       display: none;
     }
@@ -114,11 +119,32 @@
       margin-bottom: 24px;
     }
 
-    .titulo-seccion span {
-      color: var(--acento);
+    .titulo-seccion span { color: var(--acento); }
+
+    /* SUB-GRID COLEGIO (3 COLUMNAS) */
+    .grid-colegio-subcategorias {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
     }
 
-    /* GRID DE ARTÍCULOS */
+    .columna-subcategoria {
+      background: rgba(0,0,0,0.02);
+      padding: 16px;
+      border-top: 2px solid var(--negro);
+    }
+
+    .columna-subcategoria h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--acento);
+      margin-bottom: 20px;
+      text-transform: capitalize;
+      border-bottom: 1px dashed var(--gris-claro);
+      padding-bottom: 6px;
+    }
+
+    /* GRIDS GENERALES */
     .grid-articulos {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -128,19 +154,28 @@
     .articulo {
       border-bottom: 1px solid var(--gris-claro);
       padding-bottom: 24px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: opacity 0.2s;
     }
+    
+    .articulo:hover { opacity: 0.85; }
 
-    .articulo-imagen {
+    .articulo-imagen-wrapper {
       width: 100%;
       height: 200px;
       background: var(--gris-claro);
+      margin-bottom: 14px;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--gris);
-      font-size: 13px;
-      margin-bottom: 14px;
-      font-style: italic;
+    }
+
+    .articulo-imagen-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .articulo-categoria {
@@ -173,7 +208,19 @@
       font-style: italic;
     }
 
-    /* PORTADA ESPECIAL */
+    /* PORTADA */
+    .portada-contenedor { display: block; }
+    
+    .portada-vacia-aviso {
+      text-align: center;
+      padding: 60px 20px;
+      border: 1px dashed var(--gris-claro);
+      background: #fff;
+      font-family: 'Playfair Display', serif;
+    }
+    .portada-vacia-aviso h3 { font-size: 22px; margin-bottom: 8px; }
+    .portada-vacia-aviso p { font-size: 14px; color: var(--gris); font-style: italic; }
+
     .portada-principal {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -183,13 +230,8 @@
       border-bottom: 2px solid var(--negro);
     }
 
-    .portada-principal .articulo-imagen {
-      height: 320px;
-    }
-
-    .portada-principal .articulo-titulo {
-      font-size: 32px;
-    }
+    .portada-principal .articulo-imagen-wrapper { height: 350px; }
+    .portada-principal .articulo-titulo { font-size: 32px; }
 
     .portada-secundaria {
       display: grid;
@@ -197,85 +239,133 @@
       gap: 24px;
     }
 
-    /* SUBCATEGORÍAS */
-    .subcategorias-nav {
-      display: flex;
-      gap: 0;
-      margin-bottom: 28px;
-      border-bottom: 2px solid var(--negro);
-    }
+    .articulo:empty { display: none !important; }
 
-    .subcategoria-btn {
-      padding: 10px 20px;
-      border: none;
-      background: none;
-      cursor: pointer;
-      font-family: 'Source Serif 4', serif;
-      font-size: 13px;
-      color: var(--gris);
-      letter-spacing: 0.05em;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -2px;
-      transition: all 0.2s;
-    }
-
-    .subcategoria-btn:hover,
-    .subcategoria-btn.activo {
-      color: var(--negro);
-      border-bottom-color: var(--acento);
-    }
-
-    .subcategoria-contenido {
+    /* VISTA INTERIOR NOTICIA */
+    .vista-noticia {
+      max-width: 800px;
+      margin: 0 auto;
       display: none;
     }
-
-    .subcategoria-contenido.activa {
-      display: block;
-    }
-
-    /* PIE */
-    footer {
+    
+    .btn-volver {
+      display: inline-block;
       background: var(--negro);
       color: var(--blanco);
-      text-align: center;
-      padding: 24px 40px;
+      padding: 8px 16px;
+      text-decoration: none;
       font-size: 12px;
-      color: #999;
-      margin-top: 48px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 24px;
+      cursor: pointer;
+    }
+    .btn-volver:hover { background: var(--acento); }
+
+    .noticia-completa-cabecera {
+      border-bottom: 1px solid var(--negro);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
     }
 
-    /* RESPONSIVE */
+    .noticia-completa-titulo {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+
+    .noticia-completa-galeria {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .noticia-completa-galeria img {
+      width: 100%;
+      max-height: 450px;
+      object-fit: cover;
+      background: var(--gris-claro);
+    }
+
+    .noticia-completa-galeria-secundarias {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .noticia-completa-galeria-secundarias img { max-height: 250px; }
+
+    .noticia-completa-cuerpo {
+      font-size: 18px;
+      line-height: 1.8;
+      color: #222;
+      white-space: pre-wrap;
+    }
+
+    /* PANEL EDITORIAL CONTRASEÑA */
+    .admin-panel {
+      max-width: 950px;
+      margin: 40px auto;
+      padding: 24px;
+      background: #fff;
+      border: 2px dashed var(--negro);
+    }
+    .admin-panel h2 { font-family: 'Playfair Display', serif; margin-bottom: 16px; }
+    .form-row { display: flex; gap: 16px; }
+    .form-group { margin-bottom: 14px; flex: 1; }
+    .form-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px; }
+    .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ccc; font-family: sans-serif; }
+    .form-group input[type="file"] { border: none; padding: 4px 0; font-size: 12px; }
+
+    .selector-destinos-container {
+      background: #f4f6f7;
+      padding: 14px;
+      border: 1px solid #dcdfe1;
+      margin-bottom: 14px;
+      border-radius: 4px;
+    }
+    .selector-destinos-container h4 { font-size: 13px; margin-bottom: 10px; color: var(--negro); }
+    .bloque-checkboxes {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    .col-checkbox { display: flex; flex-direction: column; gap: 6px; }
+    .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+    .checkbox-item input { width: auto; cursor: pointer; }
+    .subtitulo-checkbox { font-size: 11px; font-weight: bold; text-transform: uppercase; color: var(--acento); margin-bottom: 4px; border-bottom: 1px solid #e1e4e6; padding-bottom: 2px; }
+
+    .admin-botones { display: flex; gap: 12px; margin-top: 18px; }
+    .btn-aprobar { background: #27ae60; color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-cancelar { background: #7f8c8d; color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; }
+    
+    .resultado-codigo { background: #eee; padding: 12px; margin-top: 16px; border: 1px solid #ccc; white-space: pre-wrap; font-family: monospace; font-size: 12px; display: none; color: #111; }
+
+    /* FOOTER INTEGRADO AL FONDO */
+    footer {
+      background: var(--negro);
+      color: var(--gris-claro);
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      width: 100%;
+      flex-shrink: 0;
+      border-top: 3px solid var(--acento);
+    }
+
+    @media (max-width: 950px) {
+      .grid-colegio-subcategorias { grid-template-columns: 1fr; gap: 32px; }
+      .bloque-checkboxes { grid-template-columns: 1fr 1fr; }
+    }
     @media (max-width: 768px) {
-      header { padding: 16px 20px; }
-      main { padding: 16px 16px; }
-      nav { padding: 0; }
-
-      .nombre-periodico { font-size: 36px; }
-      .fecha-linea { font-size: 11px; }
-
-      nav ul {
-        justify-content: flex-start;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-      nav ul::-webkit-scrollbar { display: none; }
-
-      nav ul li a {
-        font-size: 11px;
-        padding: 10px 12px;
-      }
-
       .portada-principal { grid-template-columns: 1fr; }
       .portada-secundaria { grid-template-columns: 1fr; }
-      .grid-articulos { grid-template-columns: 1fr; }
-
-      .portada-principal .articulo-imagen { height: 220px; }
-      .portada-principal .articulo-titulo { font-size: 22px; }
-
-      .subcategorias-nav { overflow-x: auto; flex-wrap: nowrap; }
-      .subcategoria-btn { white-space: nowrap; }
+      .noticia-completa-titulo { font-size: 30px; }
+      .form-row { flex-direction: column; gap: 0; }
+      .bloque-checkboxes { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -285,9 +375,9 @@
   <header>
     <div class="fecha-linea">
       <span id="fecha-actual"></span>
-      <span>Edición digital</span>
+      <span style="cursor: pointer; font-weight: bold;" id="btn-secreto">⚙️ Edición digital</span>
     </div>
-    <div class="nombre-periodico">NOMBRE_PERIODICO</div>
+    <div class="nombre-periodico">Noticiero Presen FESD</div>
     <div class="lema">Todo lo que importa, en un solo lugar</div>
   </header>
 
@@ -295,209 +385,187 @@
   <nav>
     <ul>
       <li><a href="#" class="nav-link activo" data-seccion="portada">Portada</a></li>
-      <li><a href="#" class="nav-link" data-seccion="cat-a">Categoría A</a></li>
-      <li><a href="#" class="nav-link" data-seccion="cat-b">Categoría B</a></li>
-      <li><a href="#" class="nav-link" data-seccion="cat-c">Categoría C</a></li>
-      <li><a href="#" class="nav-link" data-seccion="cat-d">Categoría D</a></li>
-      <li><a href="#" class="nav-link" data-seccion="cat-e">Categoría E</a></li>
-      <li><a href="#" class="nav-link" data-seccion="cat-f">Categoría F</a></li>
-      <li><a href="#" class="nav-link" data-seccion="cat-g">Categoría G</a></li>
-      <li><a href="#" class="nav-link" data-seccion="cat-h">Categoría H</a></li>
-      <li><a href="#" class="nav-link" data-seccion="cat-i">Categoría I</a></li>
-      <li><a href="#" class="nav-link" data-seccion="cat-j">Categoría J</a></li>
+      <li><a href="#" class="nav-link" data-seccion="colegio">Colegio</a></li>
+      <li><a href="#" class="nav-link" data-seccion="deportes">Deportes</a></li>
+      <li><a href="#" class="nav-link" data-seccion="granada">Granada</a></li>
+      <li><a href="#" class="nav-link" data-seccion="gastronomia">Gastronomía</a></li>
+      <li><a href="#" class="nav-link" data-seccion="salud">Salud</a></li>
+      <li><a href="#" class="nav-link" data-seccion="tiempo">Tiempo</a></li>
     </ul>
   </nav>
 
+  <!-- CONTENIDO -->
   <main>
+    <!-- DETALLE NOTICIA -->
+    <section id="vista-noticia-completa" class="vista-noticia">
+      <div class="btn-volver" onclick="volverAPortada()">← Volver al periódico</div>
+      <article>
+        <div class="noticia-completa-cabecera">
+          <div class="articulo-categoria" id="det-categoria">CATEGORÍA</div>
+          <h1 class="noticia-completa-titulo" id="det-titulo">Titular</h1>
+          <div class="articulo-autor" id="det-autor">Por Redacción</div>
+        </div>
+        <div class="noticia-completa-galeria">
+          <img id="det-foto1" src="" alt="Foto principal">
+          <div class="noticia-completa-galeria-secundarias">
+            <img id="det-foto2" src="" alt="Foto secundaria 1">
+            <img id="det-foto3" src="" alt="Foto secundaria 2">
+          </div>
+        </div>
+        <div class="noticia-completa-cuerpo" id="det-cuerpo"></div>
+      </article>
+    </section>
 
     <!-- PORTADA -->
     <section class="seccion activa" id="portada">
-      <div class="portada-principal">
-        <div class="articulo">
-          <div class="articulo-imagen">[ Imagen principal ]</div>
-          <div class="articulo-categoria">Categoría A</div>
-          <div class="articulo-titulo">Titular principal de la noticia más importante del día</div>
-          <div class="articulo-texto">Aquí va el texto introductorio de la noticia destacada. Será la primera que verán los lectores al entrar a la página del periódico.</div>
-          <div class="articulo-autor">Por Nombre Apellido</div>
-        </div>
-        <div>
-          <div class="articulo" style="margin-bottom:24px">
-            <div class="articulo-categoria">Categoría B</div>
-            <div class="articulo-titulo">Segunda noticia destacada del día</div>
-            <div class="articulo-texto">Texto breve de introducción a esta noticia secundaria.</div>
-            <div class="articulo-autor">Por Nombre Apellido</div>
-          </div>
-          <div class="articulo">
-            <div class="articulo-categoria">Categoría C</div>
-            <div class="articulo-titulo">Tercera noticia en portada</div>
-            <div class="articulo-texto">Texto breve de introducción a esta noticia.</div>
-            <div class="articulo-autor">Por Nombre Apellido</div>
+      <div class="portada-vacia-aviso" id="aviso-portada-vacia">
+        <h3>Edición en preparación</h3>
+        <p>Actualmente la mesa de redacción está seleccionando las noticias destacadas para la portada.</p>
+      </div>
+      <div class="portada-contenedor" id="bloques-portada" style="display: none;">
+        <div class="portada-principal">
+          <div class="articulo" id="hueco-portada-principal" onclick="verNoticiaCompleta(this)"></div>
+          <div>
+            <div class="articulo" id="hueco-portada-lateral-1" style="margin-bottom:24px" onclick="verNoticiaCompleta(this)"></div>
+            <div class="articulo" id="hueco-portada-lateral-2" onclick="verNoticiaCompleta(this)"></div>
           </div>
         </div>
-      </div>
-
-      <div class="portada-secundaria">
-        <div class="articulo">
-          <div class="articulo-imagen">[ Imagen ]</div>
-          <div class="articulo-categoria">Categoría D</div>
-          <div class="articulo-titulo">Noticia número cuatro</div>
-          <div class="articulo-texto">Texto breve de la noticia.</div>
-        </div>
-        <div class="articulo">
-          <div class="articulo-imagen">[ Imagen ]</div>
-          <div class="articulo-categoria">Categoría E</div>
-          <div class="articulo-titulo">Noticia número cinco</div>
-          <div class="articulo-texto">Texto breve de la noticia.</div>
-        </div>
-        <div class="articulo">
-          <div class="articulo-imagen">[ Imagen ]</div>
-          <div class="articulo-categoria">Categoría F</div>
-          <div class="articulo-titulo">Noticia número seis</div>
-          <div class="articulo-texto">Texto breve de la noticia.</div>
+        <div class="portada-secundaria">
+          <div class="articulo" id="hueco-portada-faldon-1" onclick="verNoticiaCompleta(this)"></div>
+          <div class="articulo" id="hueco-portada-faldon-2" onclick="verNoticiaCompleta(this)"></div>
+          <div class="articulo" id="hueco-portada-faldon-3" onclick="verNoticiaCompleta(this)"></div>
         </div>
       </div>
     </section>
 
-    <!-- CATEGORÍA A -->
-    <section class="seccion" id="cat-a">
-      <div class="titulo-seccion"><span>—</span> Categoría A</div>
-      <div class="grid-articulos">
-        <div class="articulo">
-          <div class="articulo-imagen">[ Imagen ]</div>
-          <div class="articulo-titulo">Titular del artículo uno</div>
-          <div class="articulo-texto">Texto de ejemplo para este artículo. Aquí irá el contenido real cuando esté listo.</div>
-          <div class="articulo-autor">Por Nombre Apellido</div>
+    <!-- COLEGIO -->
+    <section class="seccion" id="colegio">
+      <div class="titulo-seccion"><span>—</span> Crónicas del Colegio</div>
+      <div class="grid-colegio-subcategorias">
+        <div class="columna-subcategoria">
+          <h3>🎉 Festejos</h3>
+          <div id="contenedor-col-festejos"></div>
         </div>
-        <div class="articulo">
-          <div class="articulo-imagen">[ Imagen ]</div>
-          <div class="articulo-titulo">Titular del artículo dos</div>
-          <div class="articulo-texto">Texto de ejemplo para este artículo.</div>
-          <div class="articulo-autor">Por Nombre Apellido</div>
+        <div class="columna-subcategoria">
+          <h3>🚌 Excursiones</h3>
+          <div id="contenedor-col-excursiones"></div>
         </div>
-        <div class="articulo">
-          <div class="articulo-imagen">[ Imagen ]</div>
-          <div class="articulo-titulo">Titular del artículo tres</div>
-          <div class="articulo-texto">Texto de ejemplo para este artículo.</div>
-          <div class="articulo-autor">Por Nombre Apellido</div>
+        <div class="columna-subcategoria">
+          <h3>💡 Curiosidades</h3>
+          <div id="contenedor-col-curiosidades"></div>
         </div>
       </div>
     </section>
 
-    <!-- CATEGORÍAS B a I (misma estructura) -->
-    <section class="seccion" id="cat-b">
-      <div class="titulo-seccion"><span>—</span> Categoría B</div>
-      <div class="grid-articulos">
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-      </div>
-    </section>
+    <!-- SECCIONES -->
+    <section class="seccion" id="deportes"><div class="titulo-seccion"><span>—</span> Deportes</div><div class="grid-articulos" id="contenedor-deportes"></div></section>
+    <section class="seccion" id="granada"><div class="titulo-seccion"><span>—</span> Granada</div><div class="grid-articulos" id="contenedor-granada"></div></section>
+    <section class="seccion" id="gastronomia"><div class="titulo-seccion"><span>—</span> Gastronomía</div><div class="grid-articulos" id="contenedor-gastronomia"></div></section>
+    <section class="seccion" id="salud"><div class="titulo-seccion"><span>—</span> Salud</div><div class="grid-articulos" id="contenedor-salud"></div></section>
+    <section class="seccion" id="tiempo"><div class="titulo-seccion"><span>—</span> Tiempo</div><div class="grid-articulos" id="contenedor-tiempo"></div></section>
 
-    <section class="seccion" id="cat-c">
-      <div class="titulo-seccion"><span>—</span> Categoría C</div>
-      <div class="grid-articulos">
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-      </div>
-    </section>
-
-    <section class="seccion" id="cat-d">
-      <div class="titulo-seccion"><span>—</span> Categoría D</div>
-      <div class="grid-articulos">
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-      </div>
-    </section>
-
-    <section class="seccion" id="cat-e">
-      <div class="titulo-seccion"><span>—</span> Categoría E</div>
-      <div class="grid-articulos">
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-      </div>
-    </section>
-
-    <section class="seccion" id="cat-f">
-      <div class="titulo-seccion"><span>—</span> Categoría F</div>
-      <div class="grid-articulos">
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-      </div>
-    </section>
-
-    <section class="seccion" id="cat-g">
-      <div class="titulo-seccion"><span>—</span> Categoría G</div>
-      <div class="grid-articulos">
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-      </div>
-    </section>
-
-    <section class="seccion" id="cat-h">
-      <div class="titulo-seccion"><span>—</span> Categoría H</div>
-      <div class="grid-articulos">
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-      </div>
-    </section>
-
-    <section class="seccion" id="cat-i">
-      <div class="titulo-seccion"><span>—</span> Categoría I</div>
-      <div class="grid-articulos">
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-        <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Titular del artículo</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-      </div>
-    </section>
-
-    <!-- CATEGORÍA J CON SUBCATEGORÍAS -->
-    <section class="seccion" id="cat-j">
-      <div class="titulo-seccion"><span>—</span> Categoría J</div>
-
-      <div class="subcategorias-nav">
-        <button class="subcategoria-btn activo" data-sub="sub-1">Subcategoría 1</button>
-        <button class="subcategoria-btn" data-sub="sub-2">Subcategoría 2</button>
-        <button class="subcategoria-btn" data-sub="sub-3">Subcategoría 3</button>
-      </div>
-
-      <div class="subcategoria-contenido activa" id="sub-1">
-        <div class="grid-articulos">
-          <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Artículo de subcategoría 1</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-          <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Artículo de subcategoría 1</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+    <!-- PANEL EDITORIAL PROTEGIDO -->
+    <section id="panel-editor" class="admin-panel" style="display: none;">
+      <h2>Mesa de Redacción: Filtros del Colegio y Periódico</h2>
+      <p style="font-size: 13px; color: var(--gris); margin-bottom: 15px;">Redacta e inyecta noticias en los bloques elegidos.</p>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Título de la Noticia:</label>
+          <input type="text" id="adm-titulo" placeholder="Ej: Gran gymkana por el día del colegio">
+        </div>
+        <div class="form-group">
+          <label>Autor:</label>
+          <input type="text" id="adm-autor" placeholder="Ej: Alumnos de 4º ESO">
         </div>
       </div>
 
-      <div class="subcategoria-contenido" id="sub-2">
-        <div class="grid-articulos">
-          <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Artículo de subcategoría 2</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-          <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Artículo de subcategoría 2</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Etiqueta Temática Visual:</label>
+          <input type="text" id="adm-etiqueta" placeholder="Ej: COLEGIO - FESTEJOS">
         </div>
       </div>
 
-      <div class="subcategoria-contenido" id="sub-3">
-        <div class="grid-articulos">
-          <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Artículo de subcategoría 3</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
-          <div class="articulo"><div class="articulo-imagen">[ Imagen ]</div><div class="articulo-titulo">Artículo de subcategoría 3</div><div class="articulo-texto">Texto de ejemplo.</div><div class="articulo-autor">Por Nombre Apellido</div></div>
+      <div class="selector-destinos-container">
+        <h4>Selecciona los destinos exactos de publicación:</h4>
+        <div class="bloque-checkboxes">
+          <div class="col-checkbox">
+            <div class="subtitulo-checkbox">Subcategorías Colegio</div>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="col-festejos"> 🎉 Festejos</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="col-excursiones"> 🚌 Excursiones</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="col-curiosidades"> 💡 Curiosidades</label>
+          </div>
+          <div class="col-checkbox">
+            <div class="subtitulo-checkbox">Secciones del Periódico</div>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-deport"> Sección Deportes</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-granada"> Sección Granada</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-gastronomia"> Sección Gastronomía</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-salud"> Sección Salud</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="sec-tiempo"> Sección Tiempo</label>
+          </div>
+          <div class="col-checkbox">
+            <div class="subtitulo-checkbox">Bloques de Portada</div>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-principal"> Titular Grande</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-lateral-1"> Lateral Superior</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-lateral-2"> Lateral Inferior</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-faldon-1"> Faldón Izq.</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-faldon-2"> Faldón Centro</label>
+            <label class="checkbox-item"><input type="checkbox" name="destino-pub" value="portada-faldon-3"> Faldón Der.</label>
+          </div>
         </div>
       </div>
+
+      <div style="background: #fdfaf4; padding: 12px; border: 1px solid var(--gris-claro); margin-bottom: 14px;">
+        <h4 style="font-size:13px; margin-bottom:8px;">Fotografías:</h4>
+        <div class="form-group">
+          <label>1. Imagen de Cabecera (Obligatoria):</label>
+          <input type="file" id="adm-file1" accept="image/*">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>2. Foto Secundaria (Opcional):</label>
+            <input type="file" id="adm-file2" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label>3. Tercera Foto (Opcional):</label>
+            <input type="file" id="adm-file3" accept="image/*">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Entradilla / Resumen Corto:</label>
+        <input type="text" id="adm-resumen" placeholder="Frase breve...">
+      </div>
+
+      <div class="form-group">
+        <label>Cuerpo completo:</label>
+        <textarea id="adm-texto" rows="6" placeholder="Escribe aquí..."></textarea>
+      </div>
+
+      <div class="admin-botones">
+        <button type="button" class="btn-aprobar" onclick="procesarNoticiaConArchivos()">Publicar e Inyectar Reportaje</button>
+        <button type="button" class="btn-cancelar" onclick="cancelarNoticia()">Borrar Todo</button>
+      </div>
+      <div id="codigo-salida" class="resultado-codigo"></div>
     </section>
-
   </main>
 
   <footer>
-    <p>© 2025 NOMBRE_PERIODICO — Todos los derechos reservados</p>
+    <p>© 2026 Noticiero Presen FESD — Taller de Periodismo Digital</p>
   </footer>
 
   <script>
-    // Fecha automática
+    // Fecha automatizada
     const fecha = new Date();
-    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    document.getElementById('fecha-actual').textContent = fecha.toLocaleDateString('es-ES', opciones);
+    document.getElementById('fecha-actual').textContent = fecha.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-    // Navegación principal
+    // Menú
     document.querySelectorAll('.nav-link').forEach(link => {
       link.addEventListener('click', e => {
         e.preventDefault();
+        volverAPortada();
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('activo'));
         document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
         link.classList.add('activo');
@@ -505,16 +573,156 @@
       });
     });
 
-    // Subcategorías
-    document.querySelectorAll('.subcategoria-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.subcategoria-btn').forEach(b => b.classList.remove('activo'));
-        document.querySelectorAll('.subcategoria-contenido').forEach(c => c.classList.remove('activa'));
-        btn.classList.add('activo');
-        document.getElementById(btn.dataset.sub).classList.add('activa');
-      });
-    });
-  </script>
+    // SISTEMA LOCAL E INTERNET COMPATIBLE (MÁXIMA COMPATIBILIDAD)
+    // El texto codificado equivale a la clave "presen"
+    const CLAVE_ENCRIPTADA = "cHJlc2Vu"; 
 
+    document.getElementById('btn-secreto').addEventListener('click', () => {
+      const intento = prompt("Introduce la clave de la Mesa de Redacción:");
+      if (!intento) return;
+      
+      // Limpia espacios al principio y final
+      const intentoLimpio = intento.trim();
+      
+      // Comprobación compatible con local (file:///) e internet
+      if (btoa(intentoLimpio) === CLAVE_ENCRIPTADA) {
+        document.getElementById('panel-editor').style.display = 'block';
+        document.getElementById('panel-editor').scrollIntoView({ behavior: 'smooth' });
+      } else {
+        alert("Clave incorrecta. Acceso denegado.");
+      }
+    });
+
+    function verNoticiaCompleta(elemento) {
+      const titulo = elemento.getAttribute('data-titulo');
+      const categoria = elemento.getAttribute('data-categoria');
+      const autor = elemento.getAttribute('data-autor');
+      const cuerpo = elemento.getAttribute('data-cuerpo');
+      const f1 = elemento.getAttribute('data-foto1');
+      const f2 = elemento.getAttribute('data-foto2');
+      const f3 = elemento.getAttribute('data-foto3');
+      if (!titulo) return;
+
+      document.getElementById('det-titulo').innerText = titulo;
+      document.getElementById('det-categoria').innerText = categoria;
+      document.getElementById('det-autor').innerText = autor;
+      document.getElementById('det-cuerpo').innerText = cuerpo;
+      document.getElementById('det-foto1').src = f1 || '';
+      
+      const img2 = document.getElementById('det-foto2');
+      if(f2 && f2 !== "null" && f2 !== "") { img2.src = f2; img2.style.display = 'block'; } else { img2.style.display = 'none'; }
+      
+      const img3 = document.getElementById('det-foto3');
+      if(f3 && f3 !== "null" && f3 !== "") { img3.src = f3; img3.style.display = 'block'; } else { img3.style.display = 'none'; }
+
+      document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
+      document.getElementById('vista-noticia-completa').style.display = 'block';
+      window.scrollTo(0,0);
+    }
+
+    function volverAPortada() {
+      document.getElementById('vista-noticia-completa').style.display = 'none';
+      const seccionActiva = document.querySelector('.nav-link.activo').getAttribute('data-seccion');
+      document.getElementById(seccionActiva).classList.add('activa');
+    }
+
+    function cancelarNoticia() {
+      document.querySelectorAll('#panel-editor input[type="text"], #panel-editor textarea, #panel-editor input[type="file"]').forEach(i => i.value = '');
+      document.querySelectorAll('input[name="destino-pub"]').forEach(cb => cb.checked = false);
+      document.getElementById('codigo-salida').style.display = 'none';
+    }
+
+    function procesarNoticiaConArchivos() {
+      const titulo = document.getElementById('adm-titulo').value;
+      const textoCompleto = document.getElementById('adm-texto').value;
+      const resumen = document.getElementById('adm-resumen').value;
+      const checkboxesMarcados = document.querySelectorAll('input[name="destino-pub"]:checked');
+
+      if(!titulo || !textoCompleto || !resumen || checkboxesMarcados.length === 0) {
+        alert("Completa los campos obligatorios y selecciona un destino.");
+        return;
+      }
+
+      const inputF1 = document.getElementById('adm-file1').files[0];
+      const inputF2 = document.getElementById('adm-file2').files[0];
+      const inputF3 = document.getElementById('adm-file3').files[0];
+
+      const leerArchivo = (file) => {
+        return new Promise((resolve) => {
+          if (!file) resolve("");
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.readAsDataURL(file);
+        });
+      };
+
+      Promise.all([leerArchivo(inputF1), leerArchivo(inputF2), leerArchivo(inputF3)]).then(([dataF1, dataF2, dataF3]) => {
+        publicarMultiplesDestinosFinal(dataF1, dataF2, dataF3, checkboxesMarcados);
+      });
+    }
+
+    function publicarMultiplesDestinosFinal(f1, f2, f3, destinos) {
+      const titulo = document.getElementById('adm-titulo').value;
+      const autor = "Por " + (document.getElementById('adm-autor').value || "Redacción");
+      const etiqueta = document.getElementById('adm-etiqueta').value || "Colegio";
+      const resumen = document.getElementById('adm-resumen').value;
+      const textoCompleto = document.getElementById('adm-texto').value;
+      const srcF1 = f1 || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100%" height="100%" fill="%23e8e4db"/><text x="50%" y="50%" font-family="sans-serif" font-size="10" fill="%23555" text-anchor="middle" dominant-baseline="middle">[Sin Foto]</text></svg>';
+
+      const innerHTMLArticulo = `
+        <div class="articulo-imagen-wrapper"><img src="${srcF1}"></div>
+        <div class="articulo-categoria">${etiqueta}</div>
+        <div class="articulo-titulo">${titulo}</div>
+        <div class="articulo-texto">${resumen}</div>
+        <div class="articulo-autor">${autor}</div>
+      `;
+
+      const tEscaped = titulo.replace(/"/g, '&quot;');
+      const cEscaped = textoCompleto.replace(/"/g, '&quot;');
+      let haIdoAPortada = false;
+
+      destinos.forEach(checkbox => {
+        const destinoValor = checkbox.value;
+        if (destinoValor.startsWith('portada-')) {
+          haIdoAPortada = true;
+          const hueco = document.getElementById('hueco-' + destinoValor);
+          if(hueco) {
+            hueco.innerHTML = innerHTMLArticulo;
+            hueco.setAttribute('data-titulo', titulo);
+            hueco.setAttribute('data-categoria', etiqueta);
+            hueco.setAttribute('data-autor', autor);
+            hueco.setAttribute('data-cuerpo', textoCompleto);
+            hueco.setAttribute('data-foto1', srcF1);
+            hueco.setAttribute('data-foto2', f2);
+            hueco.setAttribute('data-foto3', f3);
+            hueco.style.setProperty('display', 'block', 'important');
+          }
+        } 
+        else if (destinoValor.startsWith('col-')) {
+          const contenedorSub = document.getElementById('contenedor-' + destinoValor);
+          if(contenedorSub) {
+            contenedorSub.insertAdjacentHTML('afterbegin', `<div class="articulo" data-titulo="${tEscaped}" data-categoria="${etiqueta}" data-autor="${autor}" data-cuerpo="${cEscaped}" data-foto1="${srcF1}" data-foto2="${f2}" data-foto3="${f3}" onclick="verNoticiaCompleta(this)">${innerHTMLArticulo}</div>`);
+          }
+        }
+        else if (destinoValor.startsWith('sec-')) {
+          const seccionPura = destinoValor.replace('sec-', '');
+          const contenedor = document.getElementById('contenedor-' + seccionPura);
+          if(contenedor) {
+            contenedor.insertAdjacentHTML('afterbegin', `<div class="articulo" data-titulo="${tEscaped}" data-categoria="${etiqueta}" data-autor="${autor}" data-cuerpo="${cEscaped}" data-foto1="${srcF1}" data-foto2="${f2}" data-foto3="${f3}" onclick="verNoticiaCompleta(this)">${innerHTMLArticulo}</div>`);
+          }
+        }
+      });
+
+      if(haIdoAPortada) {
+        document.getElementById('aviso-portada-vacia').style.display = 'none';
+        document.getElementById('bloques-portada').style.display = 'block';
+      }
+
+      const cajaCodigo = document.getElementById('codigo-salida');
+      cajaCodigo.style.display = 'block';
+      cajaCodigo.innerText = `¡Publicado!\n\nPLANTILLA PARA GUARDAR EN EL BLOC DE NOTAS:\n<div class="articulo" data-titulo="${tEscaped}" data-categoria="${etiqueta}" data-autor="${autor}" data-cuerpo="${cEscaped}" data-foto1="nombre_imagen.jpg" data-foto2="" data-foto3="" onclick="verNoticiaCompleta(this)">\n  <div class="articulo-imagen-wrapper"><img src="nombre_imagen.jpg"></div>\n  <div class="articulo-categoria">${etiqueta}</div>\n  <div class="articulo-titulo">${titulo}</div>\n  <div class="articulo-texto">${resumen}</div>\n  <div class="articulo-autor">${autor}</div>\n</div>`;
+      alert("¡Inyectado!");
+    }
+  </script>
 </body>
 </html>
